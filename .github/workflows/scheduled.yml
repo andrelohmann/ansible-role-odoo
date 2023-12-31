@@ -1,0 +1,12 @@
+---
+name: Scheduled
+
+on:
+  schedule:
+  - cron: '12 15 * * 5'
+
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/molecule.yml
+    secrets: inherit
+...

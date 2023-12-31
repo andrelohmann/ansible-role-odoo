@@ -1,0 +1,19 @@
+---
+name: Test
+
+on:
+  push:
+    branches:
+    - "feature/*"
+    - "fix/*"
+    - "hotfix/*"
+    - "release/*"
+    - "major/*"
+    - master
+    - main
+
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/molecule.yml
+    secrets: inherit
+...

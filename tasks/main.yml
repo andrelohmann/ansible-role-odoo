@@ -1,0 +1,7 @@
+---
+
+- name: Fail intentionally
+  ansible.builtin.assert:
+    that: true == false
+
+...

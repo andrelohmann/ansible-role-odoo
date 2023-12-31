@@ -1,0 +1,46 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+
+  vars:
+    mailpit_proxy_nginx: true
+    mailpit_proxy_domain: mail.lokal
+    mailpit_proxy_port: 80
+    postgresql_listen: "0.0.0.0"
+    postgresql_databases:
+    - name: odoo
+      encoding: UTF-8
+      extensions: []
+      state: present
+      schemas:
+      - name: odoo
+        state: present
+    postgresql_users:
+    - name: odoo
+      password: odoo_secret
+      state: present
+      role_attr_flags: CREATEDB,NOSUPERUSER
+      privileges:
+      - database: odoo
+        privs: "All"
+        state: present
+      hosts:
+      - cidr: localhost
+        database: odoo
+        state: present
+      - cidr: 0.0.0.0/0
+        database: odoo
+        state: present
+    wkhtmltopdf_install_google_fonts: False
+    odoo_config: []
+
+  roles:
+  - andrelohmann.root_colored_prompt
+  - andrelohmann.mailpit
+  - andrelohmann.postgresql
+  - andrelohmann.nodesource
+  - andrelohmann.wkhtmltopdf
+  - ansible-role-odoo
+
+...

@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    odoo_release: latest
+    odoo_config: []
+  tasks:
+  - name: "Include andrelohmann.odoo"
+    include_role:
+      name: "andrelohmann.odoo"
+...

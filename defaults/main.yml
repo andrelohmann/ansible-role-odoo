@@ -1,0 +1,6 @@
+---
+odoo_release: latest  # e.g. 16, 17
+
+# Set the configs for odoo.conf
+odoo_config: []
+...
