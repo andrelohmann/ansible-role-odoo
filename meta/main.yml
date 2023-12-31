@@ -20,6 +20,6 @@ galaxy_info:
   - odoo
 
 dependencies:
-- andrelohmann.nodesource
-- andrelohmann.wkhtmltopdf
+- { role: andrelohmann.nodesource }
+- { role: andrelohmann.wkhtmltopdf }
 ...
