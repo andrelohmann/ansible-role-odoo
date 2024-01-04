@@ -29,7 +29,7 @@ jobs:
     - name: Molecule
       uses: gofrolist/molecule-action@v2
       with:
-        molecule_command: test
+        molecule_command: test --all
         molecule_args: -d docker
         molecule_working_dir: ${{ github.repository }}
       env:

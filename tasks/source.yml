@@ -1,0 +1,124 @@
+---
+
+- name: APT | Install nodesource dependencies
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+    dpkg_options: 'force-confnew,force-confdef'
+    autoclean: true
+    autoremove: true
+    update_cache: true
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - git
+
+- name: Create group odoo
+  ansible.builtin.group:
+    name: odoo
+    state: present
+
+- name: Create user odoo
+  ansible.builtin.user:
+    name: odoo
+    group: odoo
+    shell: /usr/sbin/nologin
+    state: present
+    system: true
+    home: /opt/odoo
+
+- name: Clone odoo
+  ansible.builtin.git:
+    repo: https://github.com/odoo/odoo.git
+    dest: "/opt/odoo/odoo{{ odoo_release }}"
+    depth: 1
+    version: "{{ odoo_release }}.0"
+  become: true
+  become_user: odoo
+
+- name: Create /etc/odoo
+  ansible.builtin.file:
+    path: /etc/odoo
+    state: directory
+    owner: odoo
+    group: odoo
+    mode: '0755'
+
+- name: Copy the config file
+  ansible.builtin.copy:
+    src: /opt/odoo/odoo{{ odoo_release }}/debian/odoo.conf
+    dest: /etc/odoo/odoo.conf
+    remote_src: true
+    owner: odoo
+    group: odoo
+    mode: '0640'
+    force: false
+
+## SEEMS TO HAVE CHANGED IN ODOO15
+# max_upload_size is sadly a fixed value in addons/web/static/src/js/fields/basic_fields.js
+# replace "        this.max_upload_size = 25 * 1024 * 1024; // 25Mo"
+# with "        this.max_upload_size = 1024 * 1024 * 1024; // 1024Mo"
+# - name: replace max_upload_size
+#   lineinfile:
+#     path: "/opt/odoo/odoo15/addons/web/static/src/legacy/js/fields/basic_fields.js"
+#     regexp: "^        this.max_upload_size = 25 * 1024 * 1024; // 25Mo"
+#     line: "        this.max_upload_size = 1024 * 1024 * 1024; // 1024Mo"
+# maybe override functionality is a better way around it
+# https://stackoverflow.com/questions/58395492/override-javascript-function-in-odoo#:~:text=This%20means%20you%20cannot%20override,odoo.
+# https://www.odoo.com/fr_FR/forum/aide-1/question/odoo-10-how-to-override-javascript-function-137833
+# https://supportuae.wordpress.com/2017/08/06/how-to-override-form-widgets-odoo-javascript/
+
+- name: Add systemd unit file
+  ansible.builtin.template:
+    src: odoo.service
+    dest: /lib/systemd/system/odoo.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create odoo.service link
+  ansible.builtin.file:
+    src: /lib/systemd/system/odoo.service
+    dest: /etc/systemd/system/multi-user.target.wants/odoo.service
+    owner: root
+    group: root
+    state: link
+
+- name: Create /var/log/odoo directory
+  ansible.builtin.file:
+    path: /var/log/odoo
+    state: directory
+    owner: odoo
+    group: odoo
+    mode: 0750
+
+- name: Create /var/log/odoo/odoo-server.log
+  ansible.builtin.file:
+    path: /var/log/odoo/odoo-server.log
+    state: touch
+    owner: odoo
+    group: odoo
+    mode: 0644
+    access_time: preserve
+    modification_time: preserve
+
+# https://subscription.packtpub.com/book/big_data_and_business_intelligence/9781785884887/1/ch01lvl1sec9/initializing-a-new-odoo-database
+# https://www.odoo.com/documentation/13.0/reference/cmdline.html#database
+# - name: initialize database
+#   ansible.builtin.shell: /usr/bin/python3 /opt/odoo/odoo17/odoo-bin --database odoo_preseed --db_user odoo --db_password odoo_secret --db_host localhost --db_port 5432 --init base --stop-after-init
+#   args:
+#     executable: /bin/bash
+#   become: yes
+#   become_user: odoo
+#   when: odoo_preseed
+
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Systemctl enable odoo
+  ansible.builtin.systemd:
+    name: odoo
+    enabled: true
+
+...

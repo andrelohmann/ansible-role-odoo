@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: odoo_config
+  role_name: odoo
   author: andrelohmann
   description: ansible galaxy role to install odoo from sources
   company: CloudCourse GmbH
@@ -12,8 +12,6 @@ galaxy_info:
   platforms:
   - name: Ubuntu
     versions:
-    - bionic
-    - focal
     - jammy
 
   galaxy_tags:

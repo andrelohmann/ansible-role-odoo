@@ -12,10 +12,17 @@ This role requires ubuntu
 
 ### Role Variables
 
-Set the odoo variables
+Set the odoo variables and config parameters
 
     odoo_release: latest  # e.g. 16, 17
+    # set odoo_source_install to false, to install from nightl packages
+    odoo_source_install: false
     odoo_config: []
+    # Use the key / value format for config parameters
+    # - key: db_name
+    #   value: odoo
+    # - key: admin_passwd
+    #   value: S3cr3t!
 
 ### Example Playbook
 
@@ -54,7 +61,7 @@ https://thedatabaseme.de/2022/01/17/automated-testing-your-ansible-role-with-mol
 
 This ansible role is developed using molecule for testing. It's development is based on visual studio code and a regarding development container, solving all dependencies in terms of necessary tools (ansible, linter, molecule).
 
-The role will be tested on three ubuntu containers (bionic, focal, jammy).
+The role will be tested on ubuntu jammy.
 
 To startup the molecule test containers from within the development container, the docker socket needs to be bind mounted into the development container.
 
@@ -89,7 +96,7 @@ code .
 yamllint .
 ansible-lint .
 molecule create
-molecule test
+molecule test --all
 ```
 
 #### Vagrant + Virtualbox
@@ -115,7 +122,7 @@ cd /etc/ansible/roles/ansible-role- [tab]
 yamllint .
 ansible-lint .
 molecule create
-molecule test
+molecule test --all
 ```
 
 ### Build and Release process
@@ -127,8 +134,8 @@ The release management requires a handful of settings.
 #### Protecting the master/main branch
 
 * Settings -> Branches -> Add branch protection rule
-* Branch pattern name -> main or mster (depending on your default branch)
-* Protect matching branches -> chek "Require a pull request before merging"
+* Branch pattern name -> main or master (depending on your default branch)
+* Protect matching branches -> check "Require a pull request before merging"
 * "Require approvals" can be individually handled as required
 
 #### Give read and write permissions to GITHUB_TOKEN

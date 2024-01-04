@@ -1,5 +1,5 @@
 ---
-- name: Converge 17 Deb
+- name: Converge 17 Source
   hosts: all
   vars:
     postgresql_version: 16
@@ -30,7 +30,7 @@
         state: present
     wkhtmltopdf_install_google_fonts: false
     odoo_release: 17
-    odoo_source_install: false
+    odoo_source_install: true
     odoo_config:
     - key: admin_passwd
       value: "P@ssw0rd!"
