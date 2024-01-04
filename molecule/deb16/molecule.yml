@@ -1,0 +1,25 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+- name: ubuntu_jammy
+  image: ubuntu:22.04
+  command: ""
+  tmpfs:
+  - /tmp
+  - /run
+  - /run/lock
+  priviledged: true
+  volumes:
+  - /sys/fs/cgroup:/sys/fs/cgroup:rw
+  - /var/lib/containerd
+  cgroupns_mode: host
+  pre_build_image: false
+  dockerfile: Dockerfile.j2
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+...

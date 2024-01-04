@@ -1,0 +1,102 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+
+  vars:
+    mailpit_proxy_nginx: true
+    mailpit_proxy_domain: mail.odoo.lokal
+    mailpit_proxy_port: 80
+    postgresql_version: 16
+    postgresql_listen: "0.0.0.0"
+    postgresql_databases:
+    - name: odoo
+      encoding: UTF-8
+      extensions: []
+      state: present
+      schemas:
+      - name: odoo
+        state: present
+    postgresql_users:
+    - name: odoo
+      password: odoo_secret
+      state: present
+      role_attr_flags: CREATEDB,NOSUPERUSER
+      privileges:
+      - database: odoo
+        privs: "All"
+        state: present
+      hosts:
+      - cidr: localhost
+        database: odoo
+        state: present
+      - cidr: 0.0.0.0/0
+        database: odoo
+        state: present
+    wkhtmltopdf_install_google_fonts: false
+    odoo_release: 17
+    # odoo_release: 16
+    # odoo_source_install: true
+    odoo_source_install: false
+    odoo_config:
+
+    # DB
+    - key: admin_passwd
+      value: "P@ssw0rd!"
+    - key: db_host
+      value: "localhost"
+    - key: db_port
+      value: "5432"
+    - key: db_user
+      value: "odoo"
+    - key: db_password
+      value: "odoo_secret"
+    # https://www.odoo.com/documentation/17.0/administration/install/deploy.html
+    # https://www.odoo.com/documentation/17.0/developer/reference/cli.html
+    # switch off database listing and set filters and db names
+    # - key: list_db
+    #   value: "False"
+    # - key: db_name
+    #   value: odoo
+    # - key: db_filter
+    #   value: ^%d$
+
+    # Addons
+    # - key: addons_path
+    #   value: "/usr/lib/python3/dist-packages/odoo/addons"
+
+    # Install defaults
+    - key: default_productivity_apps
+      value: "False"
+
+    # Email
+    - key: email_from
+      value: mail@odoo.lokal
+    - key: smtp_server
+      value: localhost
+    - key: smtp_port
+      value: 1025
+
+    # Logging
+    - key: log_db
+      value: "False"
+    - key: log_db_level
+      value: debug
+    - key: log_handler
+      value: :DEBUG
+    - key: log_level
+      value: debug
+    - key: logfile
+      value: /var/log/odoo/odoo-server.log
+    - key: logrotate
+      value: "True"
+
+  roles:
+  - andrelohmann.root_colored_prompt
+  - andrelohmann.mailpit
+  - andrelohmann.postgresql
+  - andrelohmann.nodesource
+  - andrelohmann.wkhtmltopdf
+  - ansible-role-odoo
+
+...
