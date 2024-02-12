@@ -7,13 +7,13 @@
     mode: '0644'
     force: true
 
-- name: Apt | Add apt repository
+- name: APT | Add apt repository
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/etc/apt/trusted.gpg.d/odoo.asc] https://nightly.odoo.com/{{ odoo_release }}.0/nightly/deb/ ./"
     state: present
     filename: odoo
 
-- name: Install odoo packages
+- name: APT | Install odoo packages
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: present

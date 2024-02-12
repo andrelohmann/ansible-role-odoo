@@ -1,6 +1,6 @@
 ---
 
-- name: APT | Install nodesource dependencies
+- name: APT | Install odoo dependencies
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
@@ -63,7 +63,7 @@
     - python3-xlrd
     - python3-zeep
 
-- name: Install required npm packages
+- name: NPM | Install required npm packages
   community.general.npm:
     name: "{{ item }}"
     global: true
