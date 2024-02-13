@@ -1,6 +1,6 @@
 ---
 
-- name: APT | Install nodesource dependencies
+- name: APT | Install odoo dependencies
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
@@ -12,6 +12,7 @@
   vars:
     packages:
     - git
+    - acl
 
 - name: Create group odoo
   ansible.builtin.group:
