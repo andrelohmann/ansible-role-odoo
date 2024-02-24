@@ -7,13 +7,13 @@
   changed_when: false
 
 - name: Set odoo binary to /usr/bin/odoo
-  set_fact:
+  ansible.builtin.set_fact:
     odoo_binary: /usr/bin/odoo
   when: not odoo_source_install
   changed_when: false
 
 - name: Set odoo binary to /opt/odoo/odoo{{ odoo_release }}/odoo-bin
-  set_fact:
+  ansible.builtin.set_fact:
     odoo_binary: "/opt/odoo/odoo{{ odoo_release }}/odoo-bin"
   when: odoo_source_install
   changed_when: false
@@ -22,7 +22,7 @@
   ansible.builtin.shell: "/usr/bin/python3 {{ odoo_binary }} --config /etc/odoo/odoo.conf --database {{ item.database }} --init base --load-language {{ item.language }} --without-demo all --stop-after-init"
   args:
     executable: /bin/bash
-  become: yes
+  become: true
   become_user: odoo
   with_items: "{{ odoo_init_databases }}"
   changed_when: false
