@@ -8,13 +8,8 @@ odoo_source_install: false
 
 # Initialize Databases
 odoo_init_databases: []
-#- database: odoo_1
-#  language: de_DE
-
-# Initialize/Preseed the list of databases with the regarding language
-odoo_init_databases: []
-# - database: odoo_x
-#
+# - database: odoo_1
+#   language: de_DE
 
 # Set the configs for odoo.conf
 odoo_config: []
