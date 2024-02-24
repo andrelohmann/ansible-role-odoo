@@ -1,0 +1,37 @@
+---
+name: Molecule
+
+# This workflow will act as an includable module
+# it will be called by the scheduled workflow and the test workflow
+on: workflow_call
+
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        path: ${{ github.repository }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible ansible-lint yamllint
+    - name: Lint playbook
+      working-directory: ${{ github.repository }}
+      run: |
+        yamllint --version
+        yamllint .
+        ansible-lint .
+
+    - name: Molecule
+      uses: gofrolist/molecule-action@v2
+      with:
+        molecule_command: test --all
+        molecule_args: -d docker
+        molecule_working_dir: ${{ github.repository }}
+      env:
+        ANSIBLE_FORCE_COLOR: '1'
+...

@@ -1,0 +1,90 @@
+---
+
+- name: APT | Install odoo dependencies
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+    dpkg_options: 'force-confnew,force-confdef'
+    autoclean: true
+    autoremove: true
+    update_cache: true
+    cache_valid_time: 3600
+  vars:
+    packages:
+    # List extracted from https://github.com/odoo/odoo/blob/17.0/debian/control
+    - curl
+    - ca-certificates
+    - gnupg
+    - software-properties-common
+    - logrotate
+    - adduser
+    - fonts-dejavu-core
+    - fonts-freefont-ttf
+    - fonts-freefont-otf
+    - fonts-noto-core
+    - fonts-inconsolata
+    - fonts-font-awesome
+    - fonts-roboto-unhinted
+    - gsfonts
+    - libjs-underscore
+    - lsb-base
+    - python3-babel
+    - python3-chardet
+    - python3-dateutil
+    - python3-decorator
+    - python3-docutils
+    - python3-freezegun
+    - python3-geoip2
+    - python3-gevent
+    - python3-pil
+    - python3-jinja2
+    - python3-libsass
+    - python3-lxml
+    - python3-num2words
+    - python3-ofxparse
+    - python3-passlib
+    - python3-polib
+    - python3-psutil
+    - python3-psycopg2
+    - python3-pydot
+    - python3-openssl
+    - python3-pypdf2
+    - python3-qrcode
+    - python3-rjsmin
+    - python3-renderpm
+    - python3-reportlab
+    - python3-requests
+    - python3-setuptools
+    - python3-stdnum
+    - python3-tz
+    - python3-vobject
+    - python3-werkzeug
+    - python3-xlsxwriter
+    - python3-xlrd
+    - python3-zeep
+
+- name: NPM | Install required npm packages
+  community.general.npm:
+    name: "{{ item }}"
+    global: true
+  with_items:
+  - rtlcss
+  - node-less
+
+- name: Install odoo from nightly deb packages
+  ansible.builtin.include_tasks: deb.yml
+  when: not odoo_source_install
+
+- name: Install odoo from sources repo
+  ansible.builtin.include_tasks: source.yml
+  when: odoo_source_install
+
+- name: Set odoo configs
+  ansible.builtin.include_tasks: config.yml
+  loop: "{{ odoo_config }}"
+
+- name: Initialize databases
+  ansible.builtin.include_tasks: init.yml
+  when: odoo_init_databases | length > 0
+
+...

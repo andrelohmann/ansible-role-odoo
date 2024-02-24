@@ -1,0 +1,48 @@
+FROM {{ item.image }}
+
+LABEL summary="Molecule Systemd Ubuntu" \
+      maintainer="Andre Lohmann <lohmann.andre@gmail.com>"
+
+ENV container=docker LANG=C.UTF-8
+
+# Enable apt repositories.
+RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list
+
+# Enable systemd.
+RUN apt-get update ; \
+    #apt-get install -y systemd systemd-sysv bash sudo; \
+    #apt-get install -y systemd systemd-cron python3 python3-pip sudo bash vim ca-certificates dbus rsyslog iproute2; \
+    apt-get install -y --no-install-recommends systemd systemd-sysv systemd-cron python3 python3-pip sudo bash vim ca-certificates dbus rsyslog iproute2; \
+    apt-get clean ; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ; \
+    cd /lib/systemd/system/sysinit.target.wants/ ; \
+    ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1 ; \
+    rm -f /lib/systemd/system/multi-user.target.wants/* ; \
+    rm -f /etc/systemd/system/*.wants/* ; \
+    rm -f /lib/systemd/system/local-fs.target.wants/* ; \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev* ; \
+    rm -f /lib/systemd/system/sockets.target.wants/*initctl* ; \
+    rm -f /lib/systemd/system/basic.target.wants/* ; \
+    rm -f /lib/systemd/system/anaconda.target.wants/* ; \
+    rm -f /lib/systemd/system/plymouth* ; \
+    rm -f /lib/systemd/system/systemd-update-utmp*
+
+# Create `ansible` user with sudo permissions
+ENV ANSIBLE_USER=ansible SUDO_GROUP=sudo
+RUN set -xe && \
+    groupadd -r ${ANSIBLE_USER} && \
+    useradd -m -g ${ANSIBLE_USER} ${ANSIBLE_USER} && \
+    usermod -aG ${SUDO_GROUP} ${ANSIBLE_USER} && \
+    sed -i "/^%${SUDO_GROUP}/s/ALL\$/NOPASSWD:ALL/g" /etc/sudoers
+
+#VOLUME [ "/sys/fs/cgroup" ]
+
+#CMD ["/lib/systemd/systemd"]
+
+RUN systemctl set-default multi-user.target
+RUN systemctl mask dev-hugepages.mount sys-fs-fuse-connections.mount
+
+VOLUME ["/sys/fs/cgroup", "/tmp", "/run", "/run/lock"]
+STOPSIGNAL SIGRTMIN+3
+
+CMD ["/sbin/init", "--log-target=journal"]
