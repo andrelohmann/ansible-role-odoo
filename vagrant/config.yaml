@@ -1,0 +1,14 @@
+---
+configs:
+  memory: "6144"
+  cpus: "4"
+  # if a specific ansible version has to be used, this can be changed from latest to e.g. "2.11.0"
+  ansible_version: "latest"
+  role_name: "ansible-role-odoo"
+  ip: 192.168.56.54
+  domain: odoo.lokal
+  aliases:
+  - demo.odoo.lokal
+  - mail.odoo.lokal
+
+...

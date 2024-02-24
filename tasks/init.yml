@@ -1,0 +1,41 @@
+---
+
+- name: Stop odoo
+  ansible.builtin.systemd:
+    name: odoo
+    state: stopped
+  changed_when: false
+
+- name: Set odoo binary to /usr/bin/odoo
+  set_fact:
+    odoo_binary: /usr/bin/odoo
+  when: not odoo_source_install
+  changed_when: false
+
+- name: Set odoo binary to /opt/odoo/odoo{{ odoo_release }}/odoo-bin
+  set_fact:
+    odoo_binary: "/opt/odoo/odoo{{ odoo_release }}/odoo-bin"
+  when: odoo_source_install
+  changed_when: false
+
+- name: initialize database
+  ansible.builtin.shell: "/usr/bin/python3 {{ odoo_binary }} --config /etc/odoo/odoo.conf --database {{ item.database }} --init base --load-language {{ item.language }} --without-demo all --stop-after-init"
+  args:
+    executable: /bin/bash
+  become: yes
+  become_user: odoo
+  with_items: "{{ odoo_init_databases }}"
+  changed_when: false
+
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+  changed_when: false
+
+- name: Systemctl enable odoo
+  ansible.builtin.systemd:
+    name: odoo
+    enabled: true
+  changed_when: false
+
+...

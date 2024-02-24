@@ -1,0 +1,55 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: odoo restart
+    systemd:
+      name: odoo
+      state: restarted
+
+  - name: Get Service Status
+    ansible.builtin.systemd:
+      name: "odoo.service"
+    register: odoo_service_status
+
+  - name: Dump odoo service
+    ansible.builtin.debug:
+      var: odoo_service_status
+
+  - name: Assert odoo.service is enabled
+    ansible.builtin.assert:
+      that: odoo_service_status.status.ActiveState == "active"
+
+  - name: Connect to odoo
+    ansible.builtin.uri:
+      url: http://127.0.0.1:8069/web/database/selector
+      method: GET
+      return_content: true
+    register: odoo_response
+
+  - name: dump odoo_response
+    ansible.builtin.debug:
+      var: odoo_response
+
+  - name: Assert odoo_response was successfull
+    ansible.builtin.assert:
+      that: odoo_response.status == 200
+
+  - name: Assert odoo_response includes the database selector page
+    ansible.builtin.assert:
+      that:
+      - odoo_response.content is search('<title>Odoo</title>')
+      - odoo_response.content is search('Master Password')
+      - odoo_response.content is search('Database Name')
+      - odoo_response.content is search('Email')
+      - odoo_response.content is search('Password')
+      - odoo_response.content is search('Phone number')
+      - odoo_response.content is search('Language')
+      - odoo_response.content is search('Country')
+      - odoo_response.content is search('Demo data')
+
+...

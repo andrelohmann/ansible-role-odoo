@@ -1,0 +1,11 @@
+---
+
+- name: Config | Set odoo configs
+  ansible.builtin.lineinfile:
+    path: /etc/odoo/odoo.conf
+    regexp: '^{{ item.key }} = '
+    insertbefore: "^;\\s*{{ item.key }} = "
+    line: "{{ item.key }} = {{ item.value }}"
+  notify: Odoo restart
+
+...

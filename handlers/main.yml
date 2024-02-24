@@ -1,0 +1,9 @@
+---
+
+- name: Odoo restart
+  ansible.builtin.systemd:
+    name: odoo
+    state: restarted
+  changed_when: false
+
+...

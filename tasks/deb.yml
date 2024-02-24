@@ -1,0 +1,30 @@
+---
+
+- name: APT | Install gpg key
+  ansible.builtin.get_url:
+    url: https://nightly.odoo.com/odoo.key
+    dest: /etc/apt/trusted.gpg.d/odoo.asc
+    mode: '0644'
+    force: true
+
+- name: APT | Add apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/odoo.asc] https://nightly.odoo.com/{{ odoo_release }}.0/nightly/deb/ ./"
+    state: present
+    filename: odoo
+
+- name: APT | Install odoo packages
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+    dpkg_options: 'force-confnew,force-confdef'
+    autoclean: true
+    autoremove: true
+    update_cache: true
+    cache_valid_time: 3600
+    install_recommends: false
+  vars:
+    packages:
+    - odoo
+
+...
