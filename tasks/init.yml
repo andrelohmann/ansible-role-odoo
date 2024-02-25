@@ -1,5 +1,18 @@
 ---
 
+- name: APT | Install acl
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+    dpkg_options: 'force-confnew,force-confdef'
+    autoclean: true
+    autoremove: true
+    update_cache: true
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - acl
+
 - name: Stop odoo
   ansible.builtin.systemd:
     name: odoo
