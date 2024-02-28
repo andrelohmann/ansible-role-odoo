@@ -18,6 +18,14 @@
       schemas:
       - name: odoo
         state: present
+    - name: odoo_test
+      encoding: UTF-8
+      extensions: []
+      owner: odoo
+      state: present
+      schemas:
+      - name: odoo_test
+        state: present
     postgresql_users:
     - name: odoo
       password: odoo_secret
@@ -27,12 +35,21 @@
       - database: odoo
         privs: "All"
         state: present
+      - database: odoo_test
+        privs: "All"
+        state: present
       hosts:
       - cidr: localhost
         database: odoo
         state: present
       - cidr: 0.0.0.0/0
         database: odoo
+        state: present
+      - cidr: localhost
+        database: odoo_test
+        state: present
+      - cidr: 0.0.0.0/0
+        database: odoo_test
         state: present
     wkhtmltopdf_install_google_fonts: false
     odoo_release: 17
@@ -94,6 +111,10 @@
 
     odoo_init_databases:
     - database: odoo
+      language: de_DE
+    - database: odoo_test
+      language: de_DE
+    - database: odoo_test
       language: de_DE
 
   roles:
