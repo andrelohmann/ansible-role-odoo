@@ -1,0 +1,22 @@
+---
+
+- name: Check for initialized database
+  ansible.builtin.shell: "/usr/bin/python3 {{ odoo_binary }} cloc --config /etc/odoo/odoo.conf --database {{ item.database }}"
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: odoo
+  register: _is_initialized
+  failed_when: false
+  changed_when: false
+
+- name: Initialize database
+  ansible.builtin.shell: "/usr/bin/python3 {{ odoo_binary }} --config /etc/odoo/odoo.conf --database {{ item.database }} --init base --load-language {{ item.language }} --without-demo all --stop-after-init"
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: odoo
+  changed_when: false
+  when: _is_initialized.rc != 0
+
+...
