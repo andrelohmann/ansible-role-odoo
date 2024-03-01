@@ -35,15 +35,10 @@
   ansible.builtin.include_tasks: init_iterator.yml
   loop: "{{ odoo_init_databases }}"
 
-- name: Systemctl daemon-reload
-  ansible.builtin.systemd:
-    daemon_reload: true
-  changed_when: false
-
-- name: Systemctl enable odoo
+- name: Odoo restart
   ansible.builtin.systemd:
     name: odoo
-    enabled: true
+    state: started
   changed_when: false
 
 ...

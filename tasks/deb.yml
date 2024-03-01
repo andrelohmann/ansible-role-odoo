@@ -27,4 +27,15 @@
     packages:
     - odoo
 
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+  changed_when: false
+
+- name: Systemctl enable odoo
+  ansible.builtin.systemd:
+    name: odoo
+    enabled: true
+  changed_when: false
+
 ...
