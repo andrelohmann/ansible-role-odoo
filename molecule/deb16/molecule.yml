@@ -4,8 +4,8 @@ dependency:
 driver:
   name: docker
 platforms:
-- name: ubuntu_jammy
-  image: ubuntu:22.04
+- name: ubuntu_noble
+  image: ubuntu:24.04
   command: ""
   tmpfs:
   - /tmp
