@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM ubuntu:noble
 
 ENV pip_packages "ansible-core ansible-lint yamllint molecule-plugins[docker] docker testinfra"
 
@@ -36,8 +36,7 @@ RUN apt-get update \
 # Fix potential UTF-8 errors with ansible-test.
 RUN locale-gen en_US.UTF-8
 
-RUN pip install --upgrade pip \
-    && pip install --upgrade $pip_packages \
+RUN pip3 install --break-system-packages --upgrade $pip_packages \
     && echo export PATH=$PATH:/root/.local/bin >> /root/.bashrc \
     && export PATH=$PATH:/root/.local/bin \
     && ansible-galaxy collection install community.general

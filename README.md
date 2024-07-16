@@ -65,7 +65,7 @@ https://thedatabaseme.de/2022/01/17/automated-testing-your-ansible-role-with-mol
 
 This ansible role is developed using molecule for testing. It's development is based on visual studio code and a regarding development container, solving all dependencies in terms of necessary tools (ansible, linter, molecule).
 
-The role will be tested on ubuntu jammy.
+The role will be tested on ubuntu noble.
 
 To startup the molecule test containers from within the development container, the docker socket needs to be bind mounted into the development container.
 
