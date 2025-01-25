@@ -1,6 +1,8 @@
 ---
 - name: Converge 17 Deb
   hosts: all
+  become: true
+  become_method: sudo
   vars:
     postgresql_version: 16
     postgresql_listen: "0.0.0.0"
