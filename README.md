@@ -14,7 +14,7 @@ This role requires ubuntu
 
 Set the odoo variables and config parameters
 
-    odoo_release: latest  # e.g. 16, 17
+    odoo_release: latest  # e.g. 17, 18
     # set odoo_source_install to false, to install from nightl packages
     odoo_source_install: false
     odoo_config: []

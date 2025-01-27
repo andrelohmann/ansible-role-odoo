@@ -28,7 +28,9 @@
     - gsfonts
     - libjs-underscore
     - lsb-base
+    - python3-asn1crypto
     - python3-babel
+    - python3-cbor2
     - python3-chardet
     - python3-dateutil
     - python3-decorator
@@ -39,8 +41,8 @@
     - python3-pil
     - python3-jinja2
     - python3-libsass
+    - python3-ldap
     - python3-lxml
-    - python3-lxml-html-clean
     - python3-num2words
     - python3-ofxparse
     - python3-passlib
@@ -63,6 +65,20 @@
     - python3-xlsxwriter
     - python3-xlrd
     - python3-zeep
+
+- name: APT | Install odoo dependencies
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+    dpkg_options: 'force-confnew,force-confdef'
+    autoclean: true
+    autoremove: true
+    update_cache: true
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - python3-lxml-html-clean
+  when: ansible_distribution_release == 'noble'
 
 - name: NPM | Install required npm packages
   community.general.npm:

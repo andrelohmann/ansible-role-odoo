@@ -47,7 +47,7 @@
       - odoo_response.content is search('Database Name')
       - odoo_response.content is search('Email')
       - odoo_response.content is search('Password')
-      - odoo_response.content is search('Phone number')
+      - odoo_response.content is search('Phone Number')
       - odoo_response.content is search('Language')
       - odoo_response.content is search('Country')
       - odoo_response.content is search('Demo data')

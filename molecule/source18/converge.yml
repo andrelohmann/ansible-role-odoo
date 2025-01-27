@@ -1,10 +1,10 @@
 ---
-- name: Converge 16 Deb
+- name: Converge 18 Source
   hosts: all
   become: true
   become_method: sudo
   vars:
-    postgresql_version: 16
+    postgresql_version: 17
     postgresql_listen: "0.0.0.0"
     postgresql_databases:
     - name: odoo
@@ -32,8 +32,8 @@
         database: odoo
         state: present
     wkhtmltopdf_install_google_fonts: false
-    odoo_release: 16
-    odoo_source_install: false
+    odoo_release: 18
+    odoo_source_install: true
     odoo_config:
     - key: admin_passwd
       value: "P@ssw0rd!"
