@@ -75,7 +75,7 @@
     dest: /lib/systemd/system/odoo.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Create odoo.service link
   ansible.builtin.file:
@@ -91,7 +91,7 @@
     state: directory
     owner: odoo
     group: odoo
-    mode: 0750
+    mode: "0750"
 
 - name: Create /var/log/odoo/odoo-server.log
   ansible.builtin.file:
@@ -99,7 +99,7 @@
     state: touch
     owner: odoo
     group: odoo
-    mode: 0644
+    mode: "0644"
     access_time: preserve
     modification_time: preserve
 

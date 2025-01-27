@@ -33,6 +33,13 @@ You can test the several domains:
   * http://demo.odoo.lokal:8069
   * http://mail.odoo.lokal
 
+Default username and password are:
+
+```
+Email: admin
+Password: admin
+```
+
 ### Manually initialize the odoo database
 
 ```

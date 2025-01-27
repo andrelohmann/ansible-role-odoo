@@ -9,11 +9,16 @@ vagrant_config = configs['configs']
 
 Vagrant.configure(2) do |config|
 
-  config.vagrant.plugins = ["vagrant-vbguest"]
+  config.vagrant.plugins = ["vagrant-vbguest", "vagrant-hostmanager"]
+
+  # hostmanager configuration
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.hostmanager.manage_guest = true
+  config.hostmanager.include_offline = true
 
   config.vm.define "box" do |b|
 
-    #b.vm.box = "ubuntu/jammy64" # 22.04
     b.vm.box = "bento/ubuntu-24.04"
 
     b.vm.provider "virtualbox" do |vb|
@@ -22,27 +27,36 @@ Vagrant.configure(2) do |config|
       vb.customize ["modifyvm", :id, "--audio", "none"]
     end
 
+    b.vm.disk :disk, size: "20GB", primary: true
+
+    (0..2).each do |i|
+      b.vm.disk :disk, size: "25GB", name: "disk-#{i}"
+    end
+
+    # vagrant-hostmanager is necessary to update /etc/hosts on hosts and guests
+    b.vm.network "private_network", ip: vagrant_config['ip']
+    b.vm.hostname = vagrant_config['domain']
+    b.hostmanager.aliases = vagrant_config['aliases']
+
     b.vm.synced_folder ".", "/vagrant", disabled: true
     b.vm.synced_folder ".", "/vagrant/ansible_vagrant", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
     b.vm.synced_folder "../.", "/etc/ansible/roles/#{vagrant_config['role_name']}", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
+    #b.vm.synced_folder "./repositories", "/vagrant/repositories", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=777,fmode=777"]
+    b.vm.synced_folder "./terraform", "/vagrant/terraform", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
 
     # auto update guest additions
     b.vbguest.auto_update = false
-
+    
     # Run Ansible from the Vagrant VM
-    b.vm.provision "shell", inline: "apt update && apt install python3-pip docker.io tree -yqq"
-    b.vm.provision "shell", inline: "usermod -aG docker vagrant"
-
-    # Run Ansible from the Vagrant VM
-    b.vm.provision "shell", inline: "apt update && apt install python3-pip -yqq"
+    b.vm.provision "shell", inline: "apt update && apt install python3-pip tree -yqq"
 
     if vagrant_config['ansible_version'] == "latest"
-      b.vm.provision "shell", inline: "pip install --break-system-packages --upgrade --no-warn-script-location ansible-core"
+      b.vm.provision "shell", inline: "pip3 install --break-system-packages --upgrade --no-warn-script-location ansible-core"
     else
       # if you need to test with a specific version
       # e.g. Ansible Version 2.11 is important for kubespray
       # b.vm.provision "shell", inline: "pip install --upgrade ansible-core~=2.11.0"
-      b.vm.provision "shell", inline: "pip install --break-system-packages --upgrade --no-warn-script-location ansible-core~=#{vagrant_config['ansible_version']}"
+      b.vm.provision "shell", inline: "pip3 install --break-system-packages --upgrade --no-warn-script-location ansible-core~=#{vagrant_config['ansible_version']}"
     end
 
     b.vm.provision "ansible_local" do |ansible|
@@ -56,9 +70,13 @@ Vagrant.configure(2) do |config|
       }
     end
 
-    # Install molecule and its dependencies
-    b.vm.provision "shell", inline: "pip install --break-system-packages --user --upgrade --no-warn-script-location ansible-lint yamllint molecule-plugins[docker] docker testinfra", privileged: false
-    b.vm.provision "shell", inline: "echo export PATH=$PATH:/home/vagrant/.local/bin >> /home/vagrant/.bashrc", privileged: false
+    # Only install docker, if docker command is not allready installed
+    b.vm.provision "shell", inline: "docker --version || apt install docker.io -yqq"
+    b.vm.provision "shell", inline: "usermod -aG docker vagrant"
 
+    # Install molecule and its dependencies
+    b.vm.provision "shell", inline: "pip3 install --break-system-packages --user --upgrade --no-warn-script-location ansible-lint yamllint molecule-plugins[docker] docker testinfra", privileged: false
+    b.vm.provision "shell", inline: "echo export PATH=$PATH:/home/vagrant/.local/bin >> /home/vagrant/.bashrc", privileged: false
+  
   end
 end

@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM ubuntu:latest
 
 ENV pip_packages "ansible-core ansible-lint yamllint molecule-plugins[docker] docker testinfra"
 
