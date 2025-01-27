@@ -50,6 +50,6 @@
       - odoo_response.content is search('Phone Number')
       - odoo_response.content is search('Language')
       - odoo_response.content is search('Country')
-      - odoo_response.content is search('Demo data')
+      - odoo_response.content is search('Demo Data')
 
 ...
