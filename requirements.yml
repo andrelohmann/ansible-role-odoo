@@ -1,6 +1,7 @@
 ---
 
-roles: []
+roles:
+- name: andrelohmann.postgresql
 
 collections: []
 
