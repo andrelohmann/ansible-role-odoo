@@ -1,14 +1,14 @@
 ---
 
 roles:
-- andrelohmann.root_colored_prompt
-- andrelohmann.mailpit
-- andrelohmann.postgresql
-- andrelohmann.nodesource
-- andrelohmann.wkhtmltopdf
+- name: andrelohmann.root_colored_prompt
+- name: andrelohmann.mailpit
+- name: andrelohmann.postgresql
+- name: andrelohmann.nodesource
+- name: andrelohmann.wkhtmltopdf
 
 collections:
-- community.general
-- community.postgresql
+- name: community.general
+- name: community.postgresql
 
 ...
