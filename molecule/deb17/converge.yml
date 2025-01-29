@@ -51,9 +51,9 @@
     - database: odoo
       language: de_DE
   roles:
-  - name: andrelohmann.postgresql
-  - name: andrelohmann.nodesource
-  - name: andrelohmann.wkhtmltopdf
+  - role: andrelohmann.postgresql
+  - role: andrelohmann.nodesource
+  - role: andrelohmann.wkhtmltopdf
   tasks:
   - name: Include andrelohmann.odoo
     ansible.builtin.include_role:
