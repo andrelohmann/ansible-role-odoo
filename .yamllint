@@ -44,9 +44,9 @@ rules:
     max-spaces-after: 1
     level: error
   indentation:
-    spaces: consistent
-    indent-sequences: consistent
-    check-multi-line-strings: true
+    spaces: 2
+    indent-sequences: false
+    check-multi-line-strings: false
     level: error
   key-duplicates: enable
   line-length: disable

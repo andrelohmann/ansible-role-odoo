@@ -6,13 +6,13 @@
   gather_facts: false
   tasks:
 
-  - name: odoo restart
-    systemd:
+  - name: Odoo restart
+    ansible.builtin.systemd_service:
       name: odoo
       state: restarted
 
   - name: Get Service Status
-    ansible.builtin.systemd:
+    ansible.builtin.systemd_service:
       name: "odoo.service"
     register: odoo_service_status
 
@@ -31,7 +31,7 @@
       return_content: true
     register: odoo_response
 
-  - name: dump odoo_response
+  - name: Dump odoo_response
     ansible.builtin.debug:
       var: odoo_response
 

@@ -12,26 +12,26 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        path: ${{ github.repository }}
 
-    - name: Install dependencies
+    - name: Run ansible-lint
+      uses: ansible/ansible-lint@main
+      with:
+        args: "--exclude vagrant/"
+
+    - name: YAML lint
       run: |
         python -m pip install --upgrade pip
-        pip install ansible ansible-lint yamllint
-    - name: Lint playbook
-      working-directory: ${{ github.repository }}
-      run: |
+        pip install --user yamllint
         yamllint --version
         yamllint .
-        ansible-lint .
 
     - name: Molecule
       uses: gofrolist/molecule-action@v2
       with:
         molecule_command: test --all
         molecule_args: -d docker
-        molecule_working_dir: ${{ github.repository }}
+        molecule_working_dir: .
       env:
         ANSIBLE_FORCE_COLOR: '1'
+
 ...

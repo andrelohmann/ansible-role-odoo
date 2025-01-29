@@ -1,7 +1,8 @@
 ---
-- hosts: all
+- name: Install
+  hosts: all
   become: true
-  become_method: sudo
+  become_method: ansible.builtin.sudo
 
   vars:
     mailpit_proxy_nginx: true
@@ -118,11 +119,11 @@
       language: de_DE
 
   roles:
-  - andrelohmann.root_colored_prompt
-  - andrelohmann.mailpit
-  - andrelohmann.postgresql
-  - andrelohmann.nodesource
-  - andrelohmann.wkhtmltopdf
-  - ansible-role-odoo
+  - name: andrelohmann.root_colored_prompt
+  - name: andrelohmann.mailpit
+  - name: andrelohmann.postgresql
+  - name: andrelohmann.nodesource
+  - name: andrelohmann.wkhtmltopdf
+  - name: ansible-role-odoo
 
 ...

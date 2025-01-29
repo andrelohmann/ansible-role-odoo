@@ -1,12 +1,12 @@
 ---
 
 roles:
-- andrelohmann.postgresql
-- andrelohmann.nodesource
-- andrelohmann.wkhtmltopdf
+- name: andrelohmann.postgresql
+- name: andrelohmann.nodesource
+- name: andrelohmann.wkhtmltopdf
 
 collections:
-- community.general
-- community.postgresql
+- name: community.general
+- name: community.postgresql
 
 ...

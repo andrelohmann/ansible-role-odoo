@@ -2,7 +2,7 @@
 - name: Converge 17 Deb
   hosts: all
   become: true
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   vars:
     postgresql_version: 17
     postgresql_listen: "0.0.0.0"
@@ -51,11 +51,11 @@
     - database: odoo
       language: de_DE
   roles:
-  - andrelohmann.postgresql
-  - andrelohmann.nodesource
-  - andrelohmann.wkhtmltopdf
+  - role: andrelohmann.postgresql
+  - role: andrelohmann.nodesource
+  - role: andrelohmann.wkhtmltopdf
   tasks:
-  - name: "Include andrelohmann.odoo"
-    include_role:
+  - name: Include andrelohmann.odoo
+    ansible.builtin.include_role:
       name: "andrelohmann.odoo"
 ...
